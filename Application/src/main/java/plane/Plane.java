@@ -1,34 +1,31 @@
 package plane;
 
+import java.util.Objects;
+
 public class Plane {
-    private int id;
     private String model;
     private String origin;
 
     private PlaneTypes type;
     private int seats;
-    private boolean hasAmmunition;
-    private int missiles;
+    private Integer missiles;
     private boolean hasRadar;
 
-    private double[] parameters;
+    private double length;
+    private double width;
+    private double height;
     private double price;
 
-    public Plane(PlaneTypes type) {
-        if(type == PlaneTypes.SCOUT) {
-            setTypeScout(1, false);
-        } else {
-            setTypeNotScout(type, 1, 1, false);
-        }
-        setId(0);
+    public Plane() {
         setModel("");
         setOrigin("");
-        setParameters(new double[]{0, 0, 0});
+        setType(PlaneTypes.FIGHTER);
+        setSeats(1);
+        setHasRadar(false);
+        setLength(0);
+        setWidth(0);
+        setHeight(0);
         setPrice(0);
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public void setModel(String model) {
@@ -39,22 +36,14 @@ public class Plane {
         this.origin = origin;
     }
 
-    public void setTypeScout(int seats, boolean hasRadar) {
-        this.type = PlaneTypes.SCOUT;
-        setSeats(seats);
-        this.hasAmmunition = false;
-        setHasRadar(hasRadar);
-    }
-
-    public void setTypeNotScout(PlaneTypes type, int seats, int missiles, boolean hasRadar) {
-        if (type == PlaneTypes.SCOUT) {
-            throw new IllegalArgumentException();
+    public void setType(PlaneTypes type) {
+        if (missiles == null && type != PlaneTypes.SCOUT) {
+            this.missiles = 0;
         }
         this.type = type;
-        setSeats(seats);
-        this.hasAmmunition = true;
-        setMissiles(missiles);
-        setHasRadar(hasRadar);
+        if (this.type == PlaneTypes.SCOUT) {
+            this.missiles = null;
+        }
     }
 
     public void setSeats(int seats) {
@@ -64,9 +53,9 @@ public class Plane {
         this.seats = seats;
     }
 
-    public void setMissiles(int missiles) {
-        if (!hasAmmunition) {
-            throw new IllegalArgumentException("!hasAmmunition");
+    public void setMissiles(Integer missiles) {
+        if (this.type == PlaneTypes.SCOUT) {
+            throw new IllegalArgumentException("this.type == PlaneTypes.SCOUT");
         }
         if (missiles < 0 || missiles > 10) {
             throw new IllegalArgumentException("missiles < 0 || missiles > 10");
@@ -78,19 +67,20 @@ public class Plane {
         this.hasRadar = hasRadar;
     }
 
-    public void setParameters(double[] parameters) {
-        if (parameters.length != 3) {
-            throw new IllegalArgumentException("parameters.length != 3");
-        }
-        this.parameters = parameters;
+    public void setLength(double length) {
+        this.length = length;
+    }
+
+    public void setWidth(double width) {
+        this.width = width;
+    }
+
+    public void setHeight(double height) {
+        this.height = height;
     }
 
     public void setPrice(double price) {
         this.price = price;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public String getModel() {
@@ -109,11 +99,7 @@ public class Plane {
         return seats;
     }
 
-    public boolean isHasAmmunition() {
-        return hasAmmunition;
-    }
-
-    public int getMissiles() {
+    public Integer getMissiles() {
         return missiles;
     }
 
@@ -121,11 +107,46 @@ public class Plane {
         return hasRadar;
     }
 
-    public double[] getParameters() {
-        return parameters;
+    public double getLength() {
+        return length;
+    }
+
+    public double getWidth() {
+        return width;
+    }
+
+    public double getHeight() {
+        return height;
     }
 
     public double getPrice() {
         return price;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Plane plane)) {
+            return false;
+        }
+        return seats == plane.seats && Objects.equals(missiles, plane.missiles) && hasRadar == plane.hasRadar
+                && Double.compare(plane.price, price) == 0 && Objects.equals(model, plane.model)
+                && Objects.equals(origin, plane.origin) && type == plane.type
+                && Double.compare(plane.length, length) == 0 && Double.compare(plane.width, width) == 0
+                && Double.compare(plane.height, height) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(model, origin, type, seats, missiles, hasRadar, length, width, height, price);
+    }
+
+    @Override
+    public String toString() {
+        return "Plane: model=\"" + model + "\", origin=\"" + origin + "\", type=\"" + type + "\", seats=\"" + seats
+                + "\", missiles=\"" + missiles + "\", hasRadar=\"" + hasRadar + "\", length=\"" + length
+                + "\", width=\"" + width + "\", height=\"" + height + "\", price=\"" + price + "\";";
     }
 }
