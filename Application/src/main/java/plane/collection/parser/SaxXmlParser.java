@@ -1,7 +1,7 @@
 package plane.collection.parser;
 
 import plane.Plane;
-import plane.collection.parser.validation.XsdValidation;
+import plane.collection.parser.validator.XsdValidator;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -10,7 +10,7 @@ import java.util.List;
 public class SaxXmlParser extends XmlParser {
     @Override
     public List<Plane> parseFromXml(String xmlFilePath, String xsdFilePath) {
-        XsdValidation validation = new XsdValidation(xmlFilePath, xsdFilePath);
+        XsdValidator validation = new XsdValidator(xmlFilePath, xsdFilePath);
         if (!validation.validate()) {
             resultCode = 1;
             return null;
