@@ -5,6 +5,7 @@ import plane.collection.parser.XmlParser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Collection {
     private List<Plane> planes;
@@ -30,9 +31,27 @@ public class Collection {
     }
 
     public int fromXmlFile(String xmlFilePath, String xsdFilePath, XmlParser parser) {
-        List<Plane> list = new ArrayList<>();
-        planes = parser.parseFromXml(xmlFilePath, xsdFilePath);
+        List<Plane> list = parser.parseFromXml(xmlFilePath, xsdFilePath);
+        if (parser.getResultCode() == 0) {
+            planes = list;
+        }
         return parser.getResultCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Collection that)) {
+            return false;
+        }
+        return Objects.equals(planes, that.planes);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(planes);
     }
 
     @Override
