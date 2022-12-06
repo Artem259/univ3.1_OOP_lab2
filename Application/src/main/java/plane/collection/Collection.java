@@ -3,6 +3,7 @@ package plane.collection;
 import plane.Plane;
 import plane.collection.parser.XmlParser;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -30,12 +31,8 @@ public class Collection {
         planes.remove(index);
     }
 
-    public int fromXmlFile(String xmlFilePath, String xsdFilePath, XmlParser parser) {
-        List<Plane> list = parser.parseFromXml(xmlFilePath, xsdFilePath);
-        if (parser.getResultCode() == 0) {
-            planes = list;
-        }
-        return parser.getResultCode();
+    public void fromXmlFile(String xmlFilePath, String xsdFilePath, XmlParser parser) throws IOException {
+        planes = parser.parseFromXml(xmlFilePath, xsdFilePath);
     }
 
     @Override

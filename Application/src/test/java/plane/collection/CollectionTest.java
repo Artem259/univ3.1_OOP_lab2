@@ -7,6 +7,8 @@ import plane.collection.parser.DomXmlParser;
 import plane.collection.parser.SaxXmlParser;
 import plane.collection.parser.StaxXmlParser;
 
+import java.io.IOException;
+
 import static org.junit.Assert.assertEquals;
 import static plane.PlaneTypes.*;
 
@@ -60,20 +62,16 @@ public class CollectionTest {
     }
 
     @Test
-    public void fromXmlFile() {
+    public void fromXmlFile() throws IOException {
         Collection testCollection = new Collection();
-        int resCode;
 
-        resCode = testCollection.fromXmlFile(xmlFilePath, xsdFilePath, new SaxXmlParser());
-        assertEquals(0, resCode);
+        testCollection.fromXmlFile(xmlFilePath, xsdFilePath, new SaxXmlParser());
         assertEquals(collection, testCollection);
 
-        resCode = testCollection.fromXmlFile(xmlFilePath, xsdFilePath, new DomXmlParser());
-        assertEquals(0, resCode);
+        testCollection.fromXmlFile(xmlFilePath, xsdFilePath, new DomXmlParser());
         assertEquals(collection, testCollection);
 
-        resCode = testCollection.fromXmlFile(xmlFilePath, xsdFilePath, new StaxXmlParser());
-        assertEquals(0, resCode);
+        testCollection.fromXmlFile(xmlFilePath, xsdFilePath, new StaxXmlParser());
         assertEquals(collection, testCollection);
     }
 }

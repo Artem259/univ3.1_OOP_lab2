@@ -5,20 +5,22 @@ import plane.collection.parser.validator.XsdValidator;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stax.StAXSource;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.List;
 
 public class StaxXmlParser extends XmlParser {
     @Override
-    public List<Plane> parseFromXml(String xmlFilePath, String xsdFilePath) {
+    public List<Plane> parseFromXml(String xmlFilePath, String xsdFilePath) throws IOException {
         XsdValidator validation = new XsdValidator(xmlFilePath, xsdFilePath);
         if (!validation.validate()) {
-            resultCode = 1;
-            return null;
+            throw new RuntimeException("XSD-validation failed.");
         }
         try {
             XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
@@ -28,12 +30,9 @@ public class StaxXmlParser extends XmlParser {
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
             transformer.transform(new StAXSource(reader), new SAXResult(handler));
-            resultCode = 0;
             return handler.getPlaneList();
-        } catch (Exception e) {
-            e.printStackTrace();
-            resultCode = 2;
-            return null;
+        } catch (XMLStreamException | TransformerException e) {
+            throw new RuntimeException("XML parsing failed.");
         }
     }
 }

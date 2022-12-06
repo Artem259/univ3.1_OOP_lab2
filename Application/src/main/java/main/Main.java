@@ -6,6 +6,8 @@ import plane.collection.parser.SaxXmlParser;
 import plane.collection.parser.StaxXmlParser;
 import plane.collection.parser.XmlParser;
 
+import java.io.IOException;
+
 public class Main {
     private final String xmlFilePath;
     private final String xsdFilePath;
@@ -15,21 +17,19 @@ public class Main {
         this.xsdFilePath = xsdFilePath;
     }
 
-    public void runParsing(XmlParser parser) {
+    public void runParsing(XmlParser parser) throws IOException {
         Collection collection = new Collection();
-        if (collection.fromXmlFile(xmlFilePath, xsdFilePath, parser) != 0) {
-            throw new RuntimeException();
-        }
+        collection.fromXmlFile(xmlFilePath, xsdFilePath, parser);
         System.out.println(collection);
     }
 
-    public void start() {
+    public void start() throws IOException {
        runParsing(new SaxXmlParser());
        runParsing(new DomXmlParser());
        runParsing(new StaxXmlParser());
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         String xml = "src/main/files/xml_file.xml";
         String xsd = "src/main/files/xsd_file.xsd";
         new Main(xml, xsd).start();

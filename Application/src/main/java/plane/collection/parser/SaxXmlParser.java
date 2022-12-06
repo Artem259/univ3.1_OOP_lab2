@@ -1,31 +1,30 @@
 package plane.collection.parser;
 
+import org.xml.sax.SAXException;
 import plane.Plane;
 import plane.collection.parser.validator.XsdValidator;
 
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import java.io.IOException;
 import java.util.List;
 
 public class SaxXmlParser extends XmlParser {
     @Override
-    public List<Plane> parseFromXml(String xmlFilePath, String xsdFilePath) {
+    public List<Plane> parseFromXml(String xmlFilePath, String xsdFilePath) throws IOException {
         XsdValidator validation = new XsdValidator(xmlFilePath, xsdFilePath);
         if (!validation.validate()) {
-            resultCode = 1;
-            return null;
+            throw new RuntimeException("XSD-validation failed.");
         }
         try {
             SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
             SAXParser saxParser = saxParserFactory.newSAXParser();
             SaxHandler handler = new SaxHandler();
             saxParser.parse(xmlFilePath, handler);
-            resultCode = 0;
             return handler.getPlaneList();
-        } catch (Exception e) {
-            e.printStackTrace();
-            resultCode = 2;
-            return null;
+        } catch (ParserConfigurationException | SAXException e) {
+            throw new RuntimeException("XML parsing failed.");
         }
     }
 }
